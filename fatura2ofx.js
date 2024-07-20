@@ -17,7 +17,9 @@
  *
  * > const fs = require('fs');
  * . const {JSDOM} = require('jsdom');
- * . const ofxData = getOFXData(fs.readFileSync('pagina-fatura-exemplo.html'));
+ * . const html = fs.readFileSync('pagina-fatura-exemplo.html', 'utf-8');
+ * . const document = new JSDOM(html).window.document;
+ * . const ofxData = getOFXData(document);
  * //
  *
  * The object has to have the following properties:
