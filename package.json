@@ -1,0 +1,15 @@
+{
+  "name": "fatura2ofx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "snippets.js",
+  "scripts": {
+    "test": "doctest --module commonjs fatura2ofx.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "doctest": "^0.21.0",
+    "jsdom": "^24.1.0"
+  }
+}
