@@ -1,0 +1,173 @@
+<!--
+SNIPPET WITH DUE DATE
+-->
+
+<div class="c-category-status__item c-category-status__venc witdh-10" data-ng-hide="ac.cartoes[ac.indexCartaoSelecionado].faturas[ac.indexFaturaSelecionada].status === 'fechadaZerada'
+|| ac.cartoes[ac.indexCartaoSelecionado].faturas[ac.indexFaturaSelecionada].status === 'fechadaZeradaDA'">
+	<span class="c-category-status__label">venc.</span>
+	<span class="c-category-status__value ng-binding">15/07/24</span>
+</div>
+<!--
+SNIPPET WITH THE PREVIOUS BILL PAYMENt
+-->
+
+<table class="fatura__table fatura__table--detalhes-saldo fatura__table-linha-borda">
+				<tbody>					
+					<!-- ngRepeat: credito in ac.cartoes[ac.indexCartaoSelecionado].faturas[ac.
+					indexFaturaSelecionada].saldoFaturaAnteriorViewModel.creditosPagamentosViewModel --><tr ng-repeat="credito in ac.cartoes[ac.indexCartaoSelecionado].faturas[ac.indexFaturaSelecionada].saldoFaturaAnteriorViewModel.creditosPagamentosViewModel" class="ng-scope">
+						<td class="fatura__table-col-data">
+							<strong class="text-left" aria-label="17 de junho"><span aria-hidden="true" class="ng-binding">17 / jun</span></strong>
+						</td>
+						<td class="fatura__table-col-dsc">
+							<span class="text-left ng-binding" aria-label="PAGAMENTO EFETUADO">PAGAMENTO EFETUADO</span>
+						</td>
+						<td class="fatura__table-col-num text-right">
+                            <strong class="color_green text-right">
+                            <span aria-hidden="true">-</span>
+                            <!-- ngIf: credito.moeda === 'BRL' --><span ng-if="credito.moeda === 'BRL'" class="ng-scope">R$</span><!-- end ngIf: credito.moeda === 'BRL' -->
+							<!-- ngIf: credito.moeda === 'USD' -->
+							<!-- ngIf: credito.moeda === 'EUR' -->
+							<!-- ngIf: credito.moeda === 'GBP' -->
+							<!-- ngIf: credito.moeda != 'BRL' && credito.moeda != 'USD' && credito.moeda != 'EUR' && credito.moeda != 'GBP' -->
+                            <span class="sr-only ng-binding">-10.823,97</span>
+                            <span aria-hidden="true" class="ng-binding">10.823,97</span>
+                            </strong>
+                        </td>
+					</tr><!-- end ngRepeat: credito in ac.cartoes[ac.indexCartaoSelecionado].faturas[ac.indexFaturaSelecionada].saldoFaturaAnteriorViewModel.creditosPagamentosViewModel -->
+				</tbody>
+			</table>
+<!--
+SNIPPET WITH TWO VALUES in BRL
+-->
+<table>
+<tbody ng-init="[titular.ordenacaoTipo = 'data', titular.ordenacaoSequencia = false]" ng-repeat="lancamento in (lancamentos = (titular.lancamentos | customOrderBy: titular.ordenacaoTipo : titular.ordenacaoSequencia)) track by $index" class="ng-scope">
+					<tr class="linha-valor-total">
+						<!-- ngIf: lancamentos[$index - 1].data != lancamento.data && titular.ordenacaoTipo === 'data' --><td class="fatura__table-col-data ng-scope" ng-if="lancamentos[$index - 1].data != lancamento.data &amp;&amp; titular.ordenacaoTipo === 'data'">
+							<strong aria-label="23 de abril"><span aria-hidden="true" class="ng-binding">23 / abr</span></strong>
+						</td><!-- end ngIf: lancamentos[$index - 1].data != lancamento.data && titular.ordenacaoTipo === 'data' -->
+						<!-- ngIf: lancamentos[$index - 1].data === lancamento.data && titular.ordenacaoTipo === 'data' -->
+						<!-- ngIf: titular.ordenacaoTipo != 'data' -->
+						<td class="fatura__table-col-dsc ng-binding">Amazon Br         03/04</td>
+						<td class="fatura__table-col-num text-right">
+							<strong ng-class="{color_green: lancamento.sinalValor === '-'}">
+								<!-- ngIf: lancamento.sinalValor === '-' -->
+								R$ 
+								<!-- ngIf: lancamento.sinalValor === '-' -->
+								<span aria-hidden="false" class="ng-binding">
+									58,14
+								</span>
+							</strong>
+						</td>
+					</tr>
+					<!-- ngIf: lancamento.valorPrincipal!= null || lancamento.valorJuros!= null -->
+					<!-- ngIf: lancamento.valorPrincipal!= null || lancamento.valorJuros!= null -->
+				</tbody>
+				<tbody ng-init="[titular.ordenacaoTipo = 'data', titular.ordenacaoSequencia = false]" ng-repeat="lancamento in (lancamentos = (titular.lancamentos | customOrderBy: titular.ordenacaoTipo : titular.ordenacaoSequencia)) track by $index" class="ng-scope">
+					<tr class="linha-valor-total">
+						<!-- ngIf: lancamentos[$index - 1].data != lancamento.data && titular.ordenacaoTipo === 'data' --><td class="fatura__table-col-data ng-scope" ng-if="lancamentos[$index - 1].data != lancamento.data &amp;&amp; titular.ordenacaoTipo === 'data'">
+							<strong aria-label="06 de junho"><span aria-hidden="true" class="ng-binding">06 / jun</span></strong>
+						</td><!-- end ngIf: lancamentos[$index - 1].data != lancamento.data && titular.ordenacaoTipo === 'data' -->
+						<!-- ngIf: lancamentos[$index - 1].data === lancamento.data && titular.ordenacaoTipo === 'data' -->
+						<!-- ngIf: titular.ordenacaoTipo != 'data' -->
+						<td class="fatura__table-col-dsc ng-binding">Tim*61981548988</td>
+						<td class="fatura__table-col-num text-right">
+							<strong ng-class="{color_green: lancamento.sinalValor === '-'}">
+								<!-- ngIf: lancamento.sinalValor === '-' -->
+								R$ 
+								<!-- ngIf: lancamento.sinalValor === '-' -->
+								<span aria-hidden="false" class="ng-binding">
+									15,00
+								</span>
+							</strong>
+						</td>
+					</tr>
+					<!-- ngIf: lancamento.valorPrincipal!= null || lancamento.valorJuros!= null -->
+					<!-- ngIf: lancamento.valorPrincipal!= null || lancamento.valorJuros!= null -->
+				</tbody>
+</table>
+
+<!--
+SNIPPET WITH PURCHASE IN DOLLARS
+-->
+
+
+<table class="fatura__table fatura__table--agrupada fatura__table--line-small" total-blocos="1" summary="lançamentos internacionais titular ADAM VICTOR NAZARETH BRAND - final 6644">
+                <thead>
+					<tr><th class="asc" aria-sort="ascending">
+                    	<button ng-click="ac.order('data', titular, $event)" ng-focus="ac.orderLeitor('data', $event)" tabindex="0">
+                    		Data <span class="icon-order icon-itaufonts_outline_ordenar" aria-hidden="true"></span>
+                    	</button>
+                    </th>
+                    <th aria-sort="none">
+                    	<button ng-click="ac.order('descricao', titular, $event)" ng-focus="ac.orderLeitor('lançamento', $event)" tabindex="0">
+                    		lançamento <span class="icon-order icon-itaufonts_outline_ordenar" aria-hidden="true"></span>
+                    	</button>
+                    </th>
+                    <th aria-sort="none">
+                    	<button class="text-right" ng-click="ac.order('valor', titular, $event)" ng-focus="ac.orderLeitor('valor', $event)" tabindex="0">
+                    		valor <span class="icon-order icon-itaufonts_outline_ordenar" aria-hidden="true"></span>
+                    	</button>
+                    </th>
+                </tr></thead>
+				<!-- ngRepeat: lancamento in (lancamentos = (titular.lancamentos | customOrderBy: titular.ordenacaoTipo : titular.ordenacaoSequencia)) track by $index --><tbody ng-repeat="lancamento in (lancamentos = (titular.lancamentos | customOrderBy: titular.ordenacaoTipo : titular.ordenacaoSequencia)) track by $index" ng-init="[titular.ordenacaoTipo = 'data', titular.ordenacaoSequencia = false]" class="ng-scope">	
+					<!-- ngIf: ac.isTaxaDolar() && lancamentos[$index - 1].data != lancamento.data --><tr ng-if="ac.isTaxaDolar() &amp;&amp; lancamentos[$index - 1].data != lancamento.data" class="ng-scope">
+					
+						<td class="fatura__table-col-data">
+							<span aria-label="06 de julho"></span>
+							<span aria-hidden="true" class="ng-binding">06 / jul</span>
+                        </td>
+
+						<td class="fatura__table-col-desc-m"><strong>dólar de conversão</strong></td>
+						
+						<td class="fatura__table-col-num text-right">
+							<strong ng-class="{color_green: lancamento.sinalValorCotacaoDolar === '-'}">
+								<!-- ngIf: lancamento.sinalValorCotacaoDolar === '-' -->
+								R$ 
+								<!-- ngIf: lancamento.sinalValorCotacaoDolar === '-' -->
+								<span aria-hidden="false" class="ng-binding">
+									5,81
+								</span>
+							</strong>
+						</td>
+					</tr><!-- end ngIf: ac.isTaxaDolar() && lancamentos[$index - 1].data != lancamento.data -->
+
+					<!-- ngIf: !ac.isTaxaDolar() -->
+
+					<!-- ngIf: ac.isTaxaDolar() --><tr ng-if="ac.isTaxaDolar()" class="ng-scope">
+						<td class="fatura__table-col-data fatura__table-col--noborder">
+							<span aria-label="06 de julho"></span>
+						</td>
+						<td class="fatura__table-col-dsc ng-binding">Pinboard <!-- ngIf: lancamento.pais != '' || lancamento.pais != null --><span ng-if="lancamento.pais != '' || lancamento.pais != null" aria-label="em United States" class="ng-scope"></span><!-- end ngIf: lancamento.pais != '' || lancamento.pais != null --></td>
+						<td class="fatura__table-col-num text-right">
+							<strong ng-class="{color_green: lancamento.sinalValor === '-'}">
+								<!-- ngIf: lancamento.sinalValor === '-' -->
+								R$ 
+								<!-- ngIf: lancamento.sinalValor === '-' -->
+								<span aria-hidden="false" class="ng-binding">
+									127,82
+								</span>
+							</strong>
+						</td>
+					</tr><!-- end ngIf: ac.isTaxaDolar() -->
+
+					<tr>
+						<td class="fatura__table-col-data">
+							<span aria-label="06 de julho"></span>
+						</td>
+						
+						<!-- ngIf: lancamento.moeda != 'USD' -->						
+						<!-- ngIf: lancamento.moeda === 'USD' --><td class="fatura__table-col-desc-m ng-scope" ng-if="lancamento.moeda === 'USD'"><span class="ng-binding">United States</span></td><!-- end ngIf: lancamento.moeda === 'USD' -->
+						
+						<td class="fatura__table-col-num fatura__table-col-num-clean text-right"><span ng-class="{color_green: lancamento.sinalValorDolar === '-'}">
+								<!-- ngIf: lancamento.sinalValorDolar === '-' -->
+								US$
+								<!-- ngIf: lancamento.sinalValorDolar === '-' -->
+								<span aria-hidden="false" class="ng-binding">
+									22,00
+								</span>
+						</span></td>
+					</tr>
+
+					<!-- ngIf: lancamento.moeda != 'USD' -->
+				</tbody><!-- end ngRepeat: lancamento in (lancamentos = (titular.lancamentos | customOrderBy: titular.ordenacaoTipo : titular.ordenacaoSequencia)) track by $index -->
+			</table>
