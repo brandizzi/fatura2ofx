@@ -30,9 +30,37 @@
  *    //
  *    > creationDate.getTime() - new Date().getTime() < 1000
  *    true
+ *
+ * 2. The due date:
+ *
+ *    > const dueDate = ofxData.dueDate;
+ *    //
+ *    > dueDate.toISOString().slice(0,10)
+ *    '2024-07-15'
+ *
  */
 function getOFXData(html) {
   return {
     DTSERVER: new Date(),
+    dueDate: getDueDate(html),
   };
+}
+
+/**
+ * `getDueDate()` extracts the due date from the DOM object:
+ *
+ * > getDueDate(document).toISOString().slice(0,10)
+ * '2024-07-15'
+ */
+function getDueDate(html) {
+  const extractedDate = html
+    .getElementsByClassName('c-category-status__venc')[0]
+    .getElementsByClassName('c-category-status__value')[0]
+    .textContent;
+  const [day, month, year] = extractedDate
+    .trim()
+    .split('/')
+    .map(Number);
+
+  return new Date(2000+year, month-1, day);
 }
