@@ -64,3 +64,58 @@ function getDueDate(html) {
 
   return new Date(2000+year, month-1, day);
 }
+
+/**
+ * In the bank page, every transactions comes inside a `<table>` element.
+ * `getTransactionNodes()` will return every one of these elements:
+ *
+ * > const nodes = getTransactionNodes(document);
+ * //
+ * > nodes.length
+ * 3
+ * > nodes.map(e => e.tagName)
+ * ['TABLE', 'TABLE', 'TABLE']
+ *
+ * These should also have at least one of the table cells with the expected
+ * values: date, description and value:
+ *
+ * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-data'))
+ * [true, true, true]
+ * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-desc'))
+ * [true, true, true]
+ * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-num'))
+ * [true, true, true]
+ */
+function getTransactionNodes(html) {
+  const dateNodes = html
+    .getElementsByClassName('fatura__table-col-data');
+
+  const transactionNodes = [...dateNodes]
+    .map(e => e.closest('table'))
+    .filter(firstOccurence);
+
+  return transactionNodes;
+}
+
+/**
+ * `onlyFirstOccurence` is used to filter repeated values from an array. It is
+ * supposed to be passed as an argument to `filter()`.
+ *
+ * If it is called with a given value, an index and an array, it verifies if
+ * the given value of the index is the same as the index of the first occurence:
+ *
+ * > const object1 = {a:1}, object2 = {b:2}, array = [object1, object2, object1];
+ * //
+ * > firstOccurence(object1, 0, array)
+ * true
+ * > firstOccurence(object1, 2, array)
+ * false
+ *
+ * Passing it to filter will result in unique values:
+ *
+ * > array.filter(firstOccurence)
+ * [{a: 1}, {b: 2}]
+ */
+function firstOccurence(value, index, array) {
+  return array.indexOf(value) === index;
+}
