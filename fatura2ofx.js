@@ -38,10 +38,17 @@
  *    > dueDate.toISOString().slice(0,10)
  *    '2024-07-15'
  *
+ * 3. A list of transactions:
+ *
+ *    > const transactions = ofxData.BANKTRANLIST;
+ *    //
+ *    > transactions.length
+ *    3
  */
 function getOFXData(html) {
   return {
     DTSERVER: new Date(),
+    BANKTRANLIST: getBankTranList(html),
     dueDate: getDueDate(html),
   };
 }
@@ -63,6 +70,22 @@ function getDueDate(html) {
     .map(Number);
 
   return new Date(2000+year, month-1, day);
+}
+
+/**
+ * `getBankTranList()` returns a list of transactions from the page:
+ *
+ * > const transactionList = getBankTranList(document);
+ * //
+ * > transactionList.length
+ * 3
+ */
+function getBankTranList(html) {
+  const transactionNodes = getTransactionNodes(html);
+
+  const bankTranList = [...transactionNodes];
+
+  return bankTranList;
 }
 
 /**
