@@ -36,7 +36,7 @@
  *    > const dueDate = ofxData.dueDate;
  *    //
  *    > dueDate.toISOString().slice(0,10)
- *    '2024-07-15'
+ *    '2020-07-15'
  *
  * 3. A list of transactions:
  *
@@ -57,7 +57,7 @@ function getOFXData(html) {
  * `getDueDate()` extracts the due date from the DOM object:
  *
  * > getDueDate(document).toISOString().slice(0,10)
- * '2024-07-15'
+ * '2020-07-15'
  */
 function getDueDate(html) {
   const extractedDate = html
