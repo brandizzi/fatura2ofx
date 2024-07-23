@@ -64,12 +64,8 @@ function getDueDate(html) {
     .getElementsByClassName('c-category-status__venc')[0]
     .getElementsByClassName('c-category-status__value')[0]
     .textContent;
-  const [day, month, year] = extractedDate
-    .trim()
-    .split('/')
-    .map(Number);
 
-  return new Date(2000+year, month-1, day);
+  return parseDateFromDaySlashMonthSlashYear(extractedDate);
 }
 
 /**
@@ -141,4 +137,78 @@ function getTransactionNodes(html) {
  */
 function firstOccurence(value, index, array) {
   return array.indexOf(value) === index;
+}
+
+/**
+ * Given a date in the form `dd/mm/yy`, `parseDateFromDaySlashMonthSlashYear()`
+ * returns a `Date` object with the given day, month and year:
+ *
+ * > parseDateFromDaySlashMonthSlashYear('24/04/21').toISOString().slice(0,10)
+ * '2021-04-24'
+ */
+function parseDateFromDaySlashMonthSlashYear(date) {
+  const [day, month, year] = date
+    .trim()
+    .split('/')
+    .map(Number);
+
+  return new Date(2000+year, month-1, day);
+}
+
+/**
+ * Given a date in the form `day / month` (being month the short name of a month
+ * in Portuguese) and an year value, `parseDateFromDaySlashMonth()`returns a
+ * `Date` object with the given day, month and year:
+ *
+ * > parseDateFromDaySlashMonth('24 / abr', 2023).toISOString().slice(0,10)
+ * '2023-04-24'
+ */
+function parseDateFromDaySlashMonth(dayMonth, year) {
+  const [month, day] = parseDateComponentsFromDaySlashMonth(dayMonth);
+
+  return new Date(year, month-1, day);
+}
+
+/**
+ * Given a date in the form `day / month` (being month the short name of a month
+ * in Portuguese) and an year value, `getDateComponetsFromDaySlashMonth()`
+ * returns an array with the day and month values, as integer numbers, starting
+ * from 1:
+ *
+ * > parseDateComponentsFromDaySlashMonth('23 / abr')
+ * [4, 23]
+ */
+function parseDateComponentsFromDaySlashMonth(dayMonth) {
+  const [dayPart, monthPart] = dayMonth
+    .split('/')
+    .map(s => s.trim());
+  const day = parseInt(dayPart);
+  const month = convertMonthNumberToAbbreviatedMonthName(monthPart);
+
+  return [month, day];
+}
+
+
+/**
+ * Returns the numeric value of a month, given its shortened name:
+ *
+ * > convertMonthNumberToAbbreviatedMonthName('jan')
+ * 1
+ * > convertMonthNumberToAbbreviatedMonthName('abr')
+ * 4
+ * > convertMonthNumberToAbbreviatedMonthName('dez')
+ * 12
+ *
+ * Note it is supposed to work with names in Portuguese:
+ *
+ * > convertMonthNumberToAbbreviatedMonthName('fev')
+ * 2
+ * > convertMonthNumberToAbbreviatedMonthName('mai')
+ * 5
+ */
+function convertMonthNumberToAbbreviatedMonthName(monthName) {
+  return [
+    'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
+    'jul', 'ago', 'set', 'out', 'nov', 'dez'
+  ].indexOf(monthName) + 1;
 }
