@@ -39,7 +39,7 @@ SNIPPET WITH THE PREVIOUS BILL PAYMENt
 <!--
 SNIPPET WITH TWO VALUES in BRL
 -->
-<table>
+<table class="FATURA2OFX_TEST_EXPENSE1">
 <tbody ng-init="[titular.ordenacaoTipo = 'data', titular.ordenacaoSequencia = false]" ng-repeat="lancamento in (lancamentos = (titular.lancamentos | customOrderBy: titular.ordenacaoTipo : titular.ordenacaoSequencia)) track by $index" class="ng-scope">
 					<tr class="linha-valor-total">
 						<!-- ngIf: lancamentos[$index - 1].data != lancamento.data && titular.ordenacaoTipo === 'data' --><td class="fatura__table-col-data ng-scope" ng-if="lancamentos[$index - 1].data != lancamento.data &amp;&amp; titular.ordenacaoTipo === 'data'">

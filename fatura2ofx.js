@@ -75,11 +75,18 @@ function getDueDate(html) {
  * //
  * > transactionList.length
  * 3
+ *
+ * Each object should have the value of the transaction:
+ *
+ * > transactionList[0].TRNAMT
+ * -10823.97
+ *
  */
 function getBankTranList(html) {
   const transactionNodes = getTransactionNodes(html);
 
-  const bankTranList = [...transactionNodes];
+  const bankTranList = [...transactionNodes]
+    .map(getStmtTrnFromNode);
 
   return bankTranList;
 }
@@ -137,6 +144,48 @@ function getTransactionNodes(html) {
  */
 function firstOccurence(value, index, array) {
   return array.indexOf(value) === index;
+}
+
+/**
+ * `getStmtTrnFromNode` converts a `table` node with all necessary elements
+ * into an STMTTRN object:
+ *
+ * > const stmtTrn = getStmtTrnFromNode(
+ * .   document.getElementsByClassName('FATURA2OFX_TEST_EXPENSE1')[0])
+ * //
+ * > stmtTrn.TRNAMT
+ * 58.14
+ * > stmtTrn.DTPOSTED.toISOString().slice(0,10)
+ * '2020-04-23'
+ * > stmtTrn.MEMO
+ * 'Amazon Br         03/04'
+ */
+function getStmtTrnFromNode(node) {
+  const TRNAMT = parseFloat(
+      [
+        ...node
+          .querySelectorAll('.fatura__table-col-num span:not([aria-hidden="true"])')
+      ].map(e => extractDecimalCommaString(e.textContent))
+      .filter(e => Boolean(e))[0]
+    );
+
+  const MEMO = node
+    .getElementsByClassName('fatura__table-col-dsc')[0]
+    .textContent
+    .trim();
+  const DTPOSTED = parseDateFromDaySlashMonth(
+    node
+      .getElementsByClassName('fatura__table-col-data')[0]
+      .textContent
+      .trim(),
+    2023,
+  );
+
+  return {
+    DTPOSTED,
+    MEMO,
+    TRNAMT,
+  };
 }
 
 /**
@@ -211,4 +260,36 @@ function convertMonthNumberToAbbreviatedMonthName(monthName) {
     'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
     'jul', 'ago', 'set', 'out', 'nov', 'dez'
   ].indexOf(monthName) + 1;
+}
+
+/**
+ * Given a string with a number representation where the decimal separator is
+ * a comma, `parseFloatFromDecimalCommaString()` returns the corresponding
+ * number:
+ *
+ * > parseFloatFromDecimalCommaString('58,14')
+ * 58.14
+ * > parseFloatFromDecimalCommaString('-\n                            R$\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n                            -10.823,97\n                            10.823,97')
+ * -10823.97
+ */
+function parseFloatFromDecimalCommaString(number) {
+  return parseFloat(
+    extractDecimalCommaString(number)
+  );
+}
+
+
+/**
+ * Extracts a substring that matches a decimal-comman number:
+ *
+ * > extractDecimalCommaString('58,14')
+ * '58.14'
+ * > extractDecimalCommaString('                            R$\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n                            -10.823,97\n')
+ * '-10823.97'
+ */
+function extractDecimalCommaString(text) {
+  const [number] = text.match('(-?[0-9.]+,[0-90]{2})') ?? [];
+  return number
+    ?.replace(/\./g, '')
+    .replace(/,/, '.');
 }
