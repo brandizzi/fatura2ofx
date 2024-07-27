@@ -74,7 +74,9 @@ function getDueDate(html) {
  * > const transactionList = getBankTranList(document);
  * //
  * > transactionList.length
- * 3
+ * 4
+ * > transactionList.map(t => t.MEMO)
+ * ['PAGAMENTO EFETUADO', 'Amazon Br         03/04', 'Tim*61981548988', 'Pinboard']
  *
  * Each object should have the value of the transaction, the date of the
  * transaction (wiht an year based on the due date) and the description of the
