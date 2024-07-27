@@ -43,7 +43,7 @@
  *    > const transactions = ofxData.BANKTRANLIST;
  *    //
  *    > transactions.length
- *    3
+ *    4
  */
 function getOFXData(html) {
   return {
@@ -107,26 +107,26 @@ function getBankTranList(html) {
  * > const nodes = getTransactionNodes(document);
  * //
  * > nodes.length
- * 3
+ * 4
  * > nodes.map(e => e.tagName)
- * ['TABLE', 'TABLE', 'TABLE']
+ * ['TBODY', 'TBODY', 'TBODY', 'TBODY']
  *
  * These should also have at least one of the table cells with the expected
  * values: date, description and value:
  *
  * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-data'))
- * [true, true, true]
+ * [true, true, true, true]
  * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-desc'))
- * [true, true, true]
+ * [true, true, true, true]
  * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-num'))
- * [true, true, true]
+ * [true, true, true, true]
  */
 function getTransactionNodes(html) {
   const dateNodes = html
     .getElementsByClassName('fatura__table-col-data');
 
   const transactionNodes = [...dateNodes]
-    .map(e => e.closest('table'))
+    .map(e => e.closest('tbody'))
     .filter(firstOccurence);
 
   return transactionNodes;
