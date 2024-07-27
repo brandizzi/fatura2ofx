@@ -85,8 +85,10 @@ function getDueDate(html) {
 function getBankTranList(html) {
   const transactionNodes = getTransactionNodes(html);
 
+  const dueDate = getDueDate(html);
+
   const bankTranList = [...transactionNodes]
-    .map(getStmtTrnFromNode);
+    .map(e => getStmtTrnFromNode(e, dueDate.getFullYear()));
 
   return bankTranList;
 }
@@ -148,19 +150,20 @@ function firstOccurence(value, index, array) {
 
 /**
  * `getStmtTrnFromNode` converts a `table` node with all necessary elements
- * into an STMTTRN object:
+ * into an STMTTRN object. To do that, it needs the node with the data, and also
+ * the year, since this is not part of the date found in the transaction:
  *
  * > const stmtTrn = getStmtTrnFromNode(
- * .   document.getElementsByClassName('FATURA2OFX_TEST_EXPENSE1')[0])
+ * .   document.getElementsByClassName('FATURA2OFX_TEST_EXPENSE1')[0], 2019)
  * //
  * > stmtTrn.TRNAMT
  * 58.14
  * > stmtTrn.DTPOSTED.toISOString().slice(0,10)
- * '2020-04-23'
+ * '2019-04-23'
  * > stmtTrn.MEMO
  * 'Amazon Br         03/04'
  */
-function getStmtTrnFromNode(node) {
+function getStmtTrnFromNode(node, year) {
   const TRNAMT = parseFloat(
       [
         ...node
@@ -178,7 +181,7 @@ function getStmtTrnFromNode(node) {
       .getElementsByClassName('fatura__table-col-data')[0]
       .textContent
       .trim(),
-    2023,
+    year,
   );
 
   return {
