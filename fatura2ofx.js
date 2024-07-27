@@ -76,11 +76,16 @@ function getDueDate(html) {
  * > transactionList.length
  * 3
  *
- * Each object should have the value of the transaction:
+ * Each object should have the value of the transaction, the date of the
+ * transaction (wiht an year based on the due date) and the description of the
+ * transaction:
  *
  * > transactionList[0].TRNAMT
  * -10823.97
- *
+ * > transactionList[0].DTPOSTED.toISOString().slice(0,10)
+ * '2020-06-17'
+ * > transactionList[0].MEMO
+ * 'PAGAMENTO EFETUADO'
  */
 function getBankTranList(html) {
   const transactionNodes = getTransactionNodes(html);
