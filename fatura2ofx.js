@@ -77,6 +77,10 @@ function getDueDate(html) {
  * 4
  * > transactionList.map(t => t.MEMO)
  * ['PAGAMENTO EFETUADO', 'Amazon Br         03/04', 'Tim*61981548988', 'Pinboard']
+ * > transactionList.map(t => t.DTPOSTED.toISOString().slice(0,10))
+ * ['2020-06-17', '2020-04-23', '2020-06-06', '2020-07-06']
+ * > transactionList.map(t => t.TRNAMT)
+ * [-10823.97, 58.14, 15, 127.82]
  *
  * Each object should have the value of the transaction, the date of the
  * transaction (wiht an year based on the due date) and the description of the
