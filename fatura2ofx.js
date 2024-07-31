@@ -176,13 +176,10 @@ function firstOccurence(value, index, array) {
  */
 function scrapeStmtTrnFromNode(node, year) {
   const TRNAMT = parseFloat(
-      [
-        ...node
-          .querySelectorAll('.fatura__table-col-num span:not([aria-hidden="true"])')
-      ].map(e => extractDecimalCommaString(e.textContent))
+    [...findTrnamtTd(node).querySelectorAll('span:not([aria-hidden="true"])')]
+      .map(e => extractDecimalCommaString(e.textContent))
       .filter(e => Boolean(e))[0]
-    );
-
+  );
   const MEMO = node
     .getElementsByClassName('fatura__table-col-dsc')[0]
     .textContent
@@ -200,6 +197,31 @@ function scrapeStmtTrnFromNode(node, year) {
     MEMO,
     TRNAMT,
   };
+}
+
+/**
+ * `findTrnamtTd` queries a `tbody` element to find which `td` has the correct
+ * value:
+ *
+ * > const trnamtTd = findTrnamtTd(
+ * .    document.getElementsByClassName('FATURA2OFX_TEST_EXPENSE1')[0]);
+ * //
+ * > extractDecimalCommaString(trnamtTd.textContent)
+ * "58.14"
+ *
+ * If it is an expense in foreign currency, it should get the cell with the
+ * total value in reais:
+ *
+ * > const trnamtTdDollar = findTrnamtTd(
+ * .    document.getElementsByClassName('FATURA2OFX_TEST_EXPENSE_DOLLAR')[0]);
+ * //
+ * > extractDecimalCommaString(trnamtTdDollar.textContent)
+ * "127.82"
+ */
+function findTrnamtTd(node) {
+  return [...node.getElementsByTagName('tr')]
+    .filter(e => e.querySelector('.fatura__table-col-dsc'))[0]
+    .getElementsByClassName('fatura__table-col-num')[0];
 }
 
 /**
