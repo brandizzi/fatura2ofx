@@ -12,14 +12,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * `getOFXData()` returns an object with all relevant infromation to build an
+ * `scrapeOFXData()` returns an object with all relevant infromation to build an
  * OFX file. It expects to receive a DOM object:
  *
  * > const fs = require('fs');
  * . const {JSDOM} = require('jsdom');
  * . const html = fs.readFileSync('pagina-fatura-exemplo.html', 'utf-8');
  * . const document = new JSDOM(html).window.document;
- * . const ofxData = getOFXData(document);
+ * . const ofxData = scrapeOFXData(document);
  * //
  *
  * The object has to have the following properties:
@@ -45,21 +45,21 @@
  *    > transactions.length
  *    4
  */
-function getOFXData(document) {
+function scrapeOFXData(document) {
   return {
     DTSERVER: new Date(),
-    BANKTRANLIST: getBankTranList(document),
-    dueDate: getDueDate(document),
+    BANKTRANLIST: scrapeBankTranList(document),
+    dueDate: scrapeDueDate(document),
   };
 }
 
 /**
- * `getDueDate()` extracts the due date from the DOM object:
+ * `scrapeDueDate()` extracts the due date from the DOM object:
  *
- * > getDueDate(document).toISOString().slice(0,10)
+ * > scrapeDueDate(document).toISOString().slice(0,10)
  * '2020-07-15'
  */
-function getDueDate(document) {
+function scrapeDueDate(document) {
   const extractedDate = document
     .getElementsByClassName('c-category-status__venc')[0]
     .getElementsByClassName('c-category-status__value')[0]
@@ -69,9 +69,9 @@ function getDueDate(document) {
 }
 
 /**
- * `getBankTranList()` returns a list of transactions from the page:
+ * `scrapeBankTranList()` returns a list of transactions from the page:
  *
- * > const transactionList = getBankTranList(document);
+ * > const transactionList = scrapeBankTranList(document);
  * //
  * > transactionList.length
  * 4
@@ -93,22 +93,22 @@ function getDueDate(document) {
  * > transactionList[0].MEMO
  * 'PAGAMENTO EFETUADO'
  */
-function getBankTranList(document) {
-  const transactionNodes = getTransactionNodes(document);
+function scrapeBankTranList(document) {
+  const transactionNodes = findTransactionNodes(document);
 
-  const dueDate = getDueDate(document);
+  const dueDate = scrapeDueDate(document);
 
   const bankTranList = [...transactionNodes]
-    .map(e => getStmtTrnFromNode(e, dueDate.getFullYear()));
+    .map(e => scrapeStmtTrnFromNode(e, dueDate.getFullYear()));
 
   return bankTranList;
 }
 
 /**
  * In the bank page, every transactions comes inside a `<table>` element.
- * `getTransactionNodes()` will return every one of these elements:
+ * `findTransactionNodes()` will return every one of these elements:
  *
- * > const nodes = getTransactionNodes(document);
+ * > const nodes = findTransactionNodes(document);
  * //
  * > nodes.length
  * 4
@@ -125,7 +125,7 @@ function getBankTranList(document) {
  * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-num'))
  * [true, true, true, true]
  */
-function getTransactionNodes(document) {
+function findTransactionNodes(document) {
   const dateNodes = document
     .getElementsByClassName('fatura__table-col-dsc');
 
@@ -160,11 +160,11 @@ function firstOccurence(value, index, array) {
 }
 
 /**
- * `getStmtTrnFromNode` converts a `table` node with all necessary elements
+ * `scrapeStmtTrnFromNode` converts a `table` node with all necessary elements
  * into an STMTTRN object. To do that, it needs the node with the data, and also
  * the year, since this is not part of the date found in the transaction:
  *
- * > const stmtTrn = getStmtTrnFromNode(
+ * > const stmtTrn = scrapeStmtTrnFromNode(
  * .   document.getElementsByClassName('FATURA2OFX_TEST_EXPENSE1')[0], 2019)
  * //
  * > stmtTrn.TRNAMT
@@ -174,7 +174,7 @@ function firstOccurence(value, index, array) {
  * > stmtTrn.MEMO
  * 'Amazon Br         03/04'
  */
-function getStmtTrnFromNode(node, year) {
+function scrapeStmtTrnFromNode(node, year) {
   const TRNAMT = parseFloat(
       [
         ...node
@@ -246,7 +246,7 @@ function parseDateComponentsFromDaySlashMonth(dayMonth) {
     .split('/')
     .map(s => s.trim());
   const day = parseInt(dayPart);
-  const month = convertMonthNumberToAbbreviatedMonthName(monthPart);
+  const month = parseMonthNumberToAbbreviatedMonthName(monthPart);
 
   return [month, day];
 }
@@ -255,21 +255,21 @@ function parseDateComponentsFromDaySlashMonth(dayMonth) {
 /**
  * Returns the numeric value of a month, given its shortened name:
  *
- * > convertMonthNumberToAbbreviatedMonthName('jan')
+ * > parseMonthNumberToAbbreviatedMonthName('jan')
  * 1
- * > convertMonthNumberToAbbreviatedMonthName('abr')
+ * > parseMonthNumberToAbbreviatedMonthName('abr')
  * 4
- * > convertMonthNumberToAbbreviatedMonthName('dez')
+ * > parseMonthNumberToAbbreviatedMonthName('dez')
  * 12
  *
  * Note it is supposed to work with names in Portuguese:
  *
- * > convertMonthNumberToAbbreviatedMonthName('fev')
+ * > parseMonthNumberToAbbreviatedMonthName('fev')
  * 2
- * > convertMonthNumberToAbbreviatedMonthName('mai')
+ * > parseMonthNumberToAbbreviatedMonthName('mai')
  * 5
  */
-function convertMonthNumberToAbbreviatedMonthName(monthName) {
+function parseMonthNumberToAbbreviatedMonthName(monthName) {
   return [
     'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
     'jul', 'ago', 'set', 'out', 'nov', 'dez'
