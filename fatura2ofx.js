@@ -45,11 +45,11 @@
  *    > transactions.length
  *    4
  */
-function getOFXData(html) {
+function getOFXData(document) {
   return {
     DTSERVER: new Date(),
-    BANKTRANLIST: getBankTranList(html),
-    dueDate: getDueDate(html),
+    BANKTRANLIST: getBankTranList(document),
+    dueDate: getDueDate(document),
   };
 }
 
@@ -59,8 +59,8 @@ function getOFXData(html) {
  * > getDueDate(document).toISOString().slice(0,10)
  * '2020-07-15'
  */
-function getDueDate(html) {
-  const extractedDate = html
+function getDueDate(document) {
+  const extractedDate = document
     .getElementsByClassName('c-category-status__venc')[0]
     .getElementsByClassName('c-category-status__value')[0]
     .textContent;
@@ -93,10 +93,10 @@ function getDueDate(html) {
  * > transactionList[0].MEMO
  * 'PAGAMENTO EFETUADO'
  */
-function getBankTranList(html) {
-  const transactionNodes = getTransactionNodes(html);
+function getBankTranList(document) {
+  const transactionNodes = getTransactionNodes(document);
 
-  const dueDate = getDueDate(html);
+  const dueDate = getDueDate(document);
 
   const bankTranList = [...transactionNodes]
     .map(e => getStmtTrnFromNode(e, dueDate.getFullYear()));
@@ -125,9 +125,9 @@ function getBankTranList(html) {
  * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-num'))
  * [true, true, true, true]
  */
-function getTransactionNodes(html) {
-  const dateNodes = html
-    .getElementsByClassName('fatura__table-col-data');
+function getTransactionNodes(document) {
+  const dateNodes = document
+    .getElementsByClassName('fatura__table-col-dsc');
 
   const transactionNodes = [...dateNodes]
     .map(e => e.closest('tbody'))
