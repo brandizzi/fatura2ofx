@@ -5,7 +5,7 @@
 // ==/UserScript==
 
 ////////////////////////////////////////////////////////////////////////////////
-// EXTRACTION FUNCTIONS
+// SCRAPING FUNCTIONS
 //
 // These operations are responsible to take data from the HTML from the Itaú
 // site into an object.
@@ -54,21 +54,6 @@ function scrapeOFXData(document) {
 }
 
 /**
- * `scrapeDueDate()` extracts the due date from the DOM object:
- *
- * > scrapeDueDate(document).toISOString().slice(0,10)
- * '2020-07-15'
- */
-function scrapeDueDate(document) {
-  const extractedDate = document
-    .getElementsByClassName('c-category-status__venc')[0]
-    .getElementsByClassName('c-category-status__value')[0]
-    .textContent;
-
-  return parseDateFromDaySlashMonthSlashYear(extractedDate);
-}
-
-/**
  * `scrapeBankTranList()` returns a list of transactions from the page:
  *
  * > const transactionList = scrapeBankTranList(document);
@@ -102,61 +87,6 @@ function scrapeBankTranList(document) {
     .map(e => scrapeStmtTrnFromNode(e, dueDate.getFullYear()));
 
   return bankTranList;
-}
-
-/**
- * In the bank page, every transactions comes inside a `<table>` element.
- * `findTransactionNodes()` will return every one of these elements:
- *
- * > const nodes = findTransactionNodes(document);
- * //
- * > nodes.length
- * 4
- * > nodes.map(e => e.tagName)
- * ['TBODY', 'TBODY', 'TBODY', 'TBODY']
- *
- * These should also have at least one of the table cells with the expected
- * values: date, description and value:
- *
- * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-data'))
- * [true, true, true, true]
- * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-desc'))
- * [true, true, true, true]
- * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-num'))
- * [true, true, true, true]
- */
-function findTransactionNodes(document) {
-  const dateNodes = document
-    .getElementsByClassName('fatura__table-col-dsc');
-
-  const transactionNodes = [...dateNodes]
-    .map(e => e.closest('tbody'))
-    .filter(firstOccurence);
-
-  return transactionNodes;
-}
-
-/**
- * `onlyFirstOccurence` is used to filter repeated values from an array. It is
- * supposed to be passed as an argument to `filter()`.
- *
- * If it is called with a given value, an index and an array, it verifies if
- * the given value of the index is the same as the index of the first occurence:
- *
- * > const object1 = {a:1}, object2 = {b:2}, array = [object1, object2, object1];
- * //
- * > firstOccurence(object1, 0, array)
- * true
- * > firstOccurence(object1, 2, array)
- * false
- *
- * Passing it to filter will result in unique values:
- *
- * > array.filter(firstOccurence)
- * [{a: 1}, {b: 2}]
- */
-function firstOccurence(value, index, array) {
-  return array.indexOf(value) === index;
 }
 
 /**
@@ -197,6 +127,53 @@ function scrapeStmtTrnFromNode(node, year) {
     MEMO,
     TRNAMT,
   };
+}
+
+/**
+ * `scrapeDueDate()` extracts the due date from the DOM object:
+ *
+ * > scrapeDueDate(document).toISOString().slice(0,10)
+ * '2020-07-15'
+ */
+function scrapeDueDate(document) {
+  const extractedDate = document
+    .getElementsByClassName('c-category-status__venc')[0]
+    .getElementsByClassName('c-category-status__value')[0]
+    .textContent;
+
+  return parseDateFromDaySlashMonthSlashYear(extractedDate);
+}
+
+/**
+ * In the bank page, every transactions comes inside a `<tbody>` element.
+ * `findTransactionNodes()` will return every one of these elements:
+ *
+ * > const nodes = findTransactionNodes(document);
+ * //
+ * > nodes.length
+ * 4
+ * > nodes.map(e => e.tagName)
+ * ['TBODY', 'TBODY', 'TBODY', 'TBODY']
+ *
+ * These should also have at least one of the table cells with the expected
+ * values: date, description and value:
+ *
+ * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-data'))
+ * [true, true, true, true]
+ * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-desc'))
+ * [true, true, true, true]
+ * > nodes.map(e => !!e.getElementsByClassName('fatura__table-col-num'))
+ * [true, true, true, true]
+ */
+function findTransactionNodes(document) {
+  const dateNodes = document
+    .getElementsByClassName('fatura__table-col-dsc');
+
+  const transactionNodes = [...dateNodes]
+    .map(e => e.closest('tbody'))
+    .filter(firstOccurence);
+
+  return transactionNodes;
 }
 
 /**
@@ -328,4 +305,27 @@ function extractDecimalCommaString(text) {
   return number
     ?.replace(/\./g, '')
     .replace(/,/, '.');
+}
+
+/**
+ * `onlyFirstOccurence` is used to filter repeated values from an array. It is
+ * supposed to be passed as an argument to `filter()`.
+ *
+ * If it is called with a given value, an index and an array, it verifies if
+ * the given value of the index is the same as the index of the first occurence:
+ *
+ * > const object1 = {a:1}, object2 = {b:2}, array = [object1, object2, object1];
+ * //
+ * > firstOccurence(object1, 0, array)
+ * true
+ * > firstOccurence(object1, 2, array)
+ * false
+ *
+ * Passing it to filter will result in unique values:
+ *
+ * > array.filter(firstOccurence)
+ * [{a: 1}, {b: 2}]
+ */
+function firstOccurence(value, index, array) {
+  return array.indexOf(value) === index;
 }
